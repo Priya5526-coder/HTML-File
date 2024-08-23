@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Increment/Decrement Counter with Progress Bar and Undo/Redo</title>
+  <style>
+    button {
+      font-size: 24px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #31c936;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #31c936;
+    }
+
+    #counter {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 20px;
+    }
+
+    #progress-bar {
+      width: 300px;
+      height: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #progress-bar-inner {
+      width: 0%;
+      height: 100%;
+      background-color: #4CAF50;
+      transition: width 0.5s; /* add transition effect */
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <button id="increment-btn">+</button>
+    <button id="decrement-btn">-</button>
+    <button id="undo-btn">Undo</button>
+    <button id="redo-btn">Redo</button>
+    <p id="counter">0</p>
+    <div id="progress-bar">
+      <div id="progress-bar-inner"></div>
+    </div>
+  </div>
+
+  <script>
+    let count = 0;
+    let history = [0]; // store history of counts
+    let currentIndex = 0; // current index in history
+    let progressBar = document.getElementById("progress-bar-inner");
+
+    document.getElementById("increment-btn").addEventListener("click", function() {
+      if (count < 150) {
+        count++;
+        history.splice(currentIndex + 1, history.length - currentIndex - 1, count);
+        currentIndex++;
+        document.getElementById("counter").textContent = count;
+        updateProgressBar();
+      }
+    });
+
+    document.getElementById("decrement-btn").addEventListener("click", function() {
+      if (count > 0) {
+        count--;
+        history.splice(currentIndex + 1, history.length - currentIndex - 1, count);
+        currentIndex++;
+        document.getElementById("counter").textContent = count;
+        updateProgressBar();
+      }
+    });
+
+    document.getElementById("undo-btn").addEventListener("click", function() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        count = history[currentIndex];
+        document.getElementById("counter").textContent = count;
+        updateProgressBar();
+      }
+    });
+
+    document.getElementById("redo-btn").addEventListener("click", function() {
+      if (currentIndex < history.length - 1) {
+        currentIndex++;
+        count = history[currentIndex];
+        document.getElementById("counter").textContent = count;
+        updateProgressBar();
+      }
+    });
+
+    function updateProgressBar() {
+      let progress = (count / 150) * 100;
+      progressBar.style.width = progress + "%";
+    }
+  </script>
+</body>
+</html>
